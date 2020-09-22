@@ -1,6 +1,6 @@
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.lang.reflect.Array;
+import java.lang.Math;
 import java.util.Arrays;
 import java.util.Scanner;
 
@@ -14,6 +14,7 @@ public class Main {
         String line;
         int row, column, exRadius;
         int[][] elevation;
+        Peak[] Peaks;
 
         start=System.currentTimeMillis();
 
@@ -34,10 +35,8 @@ public class Main {
         }//for
 
         lowValue(elevation,row,column);
-        findPeaks(elevation,row,column,exRadius,98480);
-        //TEST(elevation,row,column,exRadius,98480);
-
-
+        Peaks=findPeaks(elevation,row,column,exRadius,98480);
+        shortestDistance(Peaks);
 
         end=System.currentTimeMillis();
         total=end-start;
@@ -45,81 +44,56 @@ public class Main {
         
     }//main
 
-    public static void findPeaks(int[][] elevation, int row, int column, int exRadius, int heightRef){
-        int length=elevation.length;
-        int peak,count=0;
-        int rowAmount=row,colAmount=column;
-        Peak[] Peaks=new Peak[length];
+    private static void shortestDistance(Peak[] peaks){
+        int count=0;
+        int length = peaks.length;
+        Distance d;
+        Distance[] distances = new Distance[peaks.length* peaks.length];
 
-        for (row = exRadius; row < rowAmount-exRadius; row+=exRadius/2) {
-            for (column = exRadius; column <colAmount-exRadius; column+=exRadius/2){
-                peak = elevation[row][column];
-                if(peak>=heightRef){
-                    Peak P = new Peak(peak,row,column);
-                    Peaks[count]=P;
-                    count++;
-                }//if
-            }//Column
-        }//Row
-        Peaks = Arrays.copyOf(Peaks,count);
-    }//find Peaks
-
-    public static void TEST(int[][] elevation, int row, int column, int exRadius, int heightRef){
-        int length=elevation.length;
-        int flag=0,peak,count=0;
-        int rowAmount=row,colAmount=column;
-        Peak[] Peaks=new Peak[length];
-        row=0;
-        column=0;
-        /*
-        while(row<rowAmount-exRadius&&column<=colAmount-exRadius){
-            peak = elevation[row][column];
-            for (int i = 0; i < 11; i++) {
-                if (peak<elevation[row][column+i]||peak<elevation[row][column-i]){
-                    if (elevation[row][column+i]>elevation[row][column-i]){
-                        peak=elevation[row][column+i];
-                    }else{
-                        peak=elevation[row][column-i];
-                    }
-                }
-            }
-            if(peak>=heightRef){
-                Peak P = new Peak(peak,row,column);
-                Peaks[count]=P;
+        for (int i = 0; i < length; i++){
+            for (int j = i+1; j < length; j++) {
+                d = new Distance(peaks[i],peaks[j]);
+                distances[count]=d;
                 count++;
-            }
-            row++;
-            column++;
-        }
-        */
-        while(row<rowAmount-exRadius&&column<=colAmount-exRadius){
-            peak = elevation[row][column];
-            for (int i = 0; i < exRadius; i++) {
-                for (int j = 0; j < exRadius; j++) {
-                    if (peak<elevation[row+i][column+j]&&flag<elevation[row+i][column+i]){
-                        flag=elevation[row+i][column+i];
-                        System.out.println(flag);
-                    }//if
-                }//for
             }//for
-            if(peak>=heightRef){
-                Peak P = new Peak(peak,row,column);
-                Peaks[count]=P;
-                count++;
-            }
-            row++;
-            column++;
+        }//for
+
+        distances=Arrays.copyOf(distances,count);
+        for (int i = 0; i < count; i++) {
+            System.out.printf("Distance: %.2f\n",distances[i].getDistance());
         }
+    }
+    public static Peak[] findPeaks(int[][] elevation, int row, int column, int exRadius, int heightRef){
+        int flag=0,peakCount=0,count=0;
+        int length=elevation.length;
+        Peak[] Peaks=new Peak[length];
 
+        for (int i = exRadius; i < row-exRadius; i+=exRadius){
+            for (int j = exRadius; j < column-exRadius; j+=exRadius){
+                peakCount=0;
+                flag=elevation[i][j];
 
-
+                for (int k = i-exRadius; k <i; k++) {
+                    for (int l = j-exRadius; l <j; l++) {
+                        if (elevation[k][l]<flag ){
+                            peakCount++;
+                        }//if
+                    }//for l
+                }//for k
+                if(peakCount==Math.pow(exRadius,2) && flag>=heightRef){
+                    Peak P = new Peak(flag,i,j);
+                    Peaks[count] = P;
+                    count++;
+                }//peakCount
+            }//for j
+        }//for i
+        System.out.println(count);
         Peaks = Arrays.copyOf(Peaks,count);
-        System.out.println(Arrays.toString(Peaks));
-        System.out.println(Peaks.length);
+        for (int i = 0; i < count; i++) {
+            System.out.println(Peaks[i].toString());
+        }
+        return Peaks;
     }//find Peaks
-
-
-
     public static void lowValue(int[][] elevation, int row, int column){
         int min=elevation[0][0],count=0;
         for(int i = 0; i < row; i++) {
@@ -136,8 +110,4 @@ public class Main {
         }//for
         System.out.printf("The lowest value is: %d. It appeared %d times\n",min,count);
     }//lowValue
-
-
-
-
 }//Main
