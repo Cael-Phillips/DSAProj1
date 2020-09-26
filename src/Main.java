@@ -34,9 +34,9 @@ public class Main {
             }//for
         }//for
 
-        lowValue(elevation,row,column);
+        //lowValue(elevation,row,column);
         Peaks=findPeaks(elevation,row,column,exRadius,98480);
-        shortestDistance(Peaks);
+        //shortestDistance(Peaks);
 
         end=System.currentTimeMillis();
         total=end-start;
@@ -47,6 +47,7 @@ public class Main {
     private static void shortestDistance(Peak[] peaks){
         int count=0;
         int length = peaks.length;
+        int min=0,index=0;
         Distance d;
         Distance[] distances = new Distance[peaks.length* peaks.length];
 
@@ -59,35 +60,70 @@ public class Main {
         }//for
 
         distances=Arrays.copyOf(distances,count);
-        for (int i = 0; i < count; i++) {
-            System.out.printf("Distance: %.2f\n",distances[i].getDistance());
+//        for (int i = 0; i < count; i++) {
+  //          System.out.printf("Distance: %.2f\n",distances[i].getDistance());
+    //    }
+
+        for (int start = 0; start<count; start++) {
+
         }
+        
+        
+        
+        
     }
     public static Peak[] findPeaks(int[][] elevation, int row, int column, int exRadius, int heightRef){
-        int flag=0,peakCount=0,count=0;
-        int length=elevation.length;
+        int flag,peakCount,count=0,length=row*column,x,breakCount=0;
+        int[] selCheck = new int[length];
         Peak[] Peaks=new Peak[length];
-
+        boolean dupe=false;
+        //outer two loops grab a selection
         for (int i = exRadius; i < row-exRadius; i+=exRadius){
             for (int j = exRadius; j < column-exRadius; j+=exRadius){
                 peakCount=0;
                 flag=elevation[i][j];
+                x=0;
 
-                for (int k = i-exRadius; k <i; k++) {
-                    for (int l = j-exRadius; l <j; l++) {
-                        if (elevation[k][l]<flag ){
-                            peakCount++;
-                        }//if
+                //sets a check by array
+                for (int k = i-exRadius; k <i+exRadius; k++) {
+                    for (int l = j - exRadius; l < j + exRadius; l++){
+                        selCheck[x]=elevation[k][j];
+                        x++;
+                    }//for
+                }//for
+
+                //inner two loops search the selection
+                for (int k = i-exRadius; k <i+exRadius; k++) {
+                    for (int l = j-exRadius; l < j+exRadius; l++) {
+
+                        //Find if the flag is taller or smaller than the selection
+                        if (elevation[k][l]<flag){//flag taller
+                            peakCount++;//increase Peak counter
+                        }else if(elevation[k][l]>flag){//smaller
+                            flag=elevation[k][l];//change peak
+                            peakCount++;//increase Peak counter
+                        }
+
+                        for (x = 0;  x< selCheck.length ; x++) {
+                            if (flag == selCheck[x]){
+                                dupe=true;
+                                break;
+                            }else{
+                                dupe=false;
+                            }
+                        }
                     }//for l
                 }//for k
-                if(peakCount==Math.pow(exRadius,2) && flag>=heightRef){
+                if(flag>=heightRef && peakCount>=(int)Math.pow(exRadius*2,2) && !dupe){
                     Peak P = new Peak(flag,i,j);
+                    System.out.println(P.toString());
                     Peaks[count] = P;
                     count++;
                 }//peakCount
+
             }//for j
         }//for i
-        System.out.println(count);
+        System.out.println("Number of Peaks:\t"+count);
         Peaks = Arrays.copyOf(Peaks,count);
         for (int i = 0; i < count; i++) {
             System.out.println(Peaks[i].toString());
@@ -101,11 +137,11 @@ public class Main {
                 if (min > elevation[i][j]){
                     min = elevation[i][j];
                     count = 0;
+                    i=0;
+                    j=0;
                 }else if (min == elevation[i][j]){
                     count++;
-                }else{
-                    // :/ just vibin
-                }//else
+                }
             }//for
         }//for
         System.out.printf("The lowest value is: %d. It appeared %d times\n",min,count);
