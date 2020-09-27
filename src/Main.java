@@ -46,7 +46,7 @@ public class Main {
     }//main
 
     public static void commonElevation(int[][] elevation, int row, int column) {
-        int index=0,flag=0,x=0,length=row*column;
+        int index=0,flag,x=0,length=row*column;
         int[] heights = new int[length];
         int[] freq = new int[length];
 
@@ -81,7 +81,6 @@ public class Main {
             }//for
         }//for
 
-        Dist=Arrays.copyOf(distances,count);
 
         for (int i = 0; i < length-1; i++) {
             for (int j = i+1; j <length; j++) {
@@ -121,12 +120,11 @@ public class Main {
 
 
     public static Peak[] findPeaks(int[][] elevation, int row, int column, int exRadius, int heightRef){
-        int flag,peakCount,count=0,length=column*row,sel,k,l=0;
+        int flag,count=0,length=column*row,sel,k,l=0;
         Peak[] Peaks=new Peak[length];
         //outer two loops grab a selection
         for (int i = exRadius; i < row-exRadius; i+=exRadius*2){
             for (int j = exRadius; j < column-exRadius; j+=exRadius*2){
-                peakCount=0;
                 flag=elevation[i][j];
 
                 //inner two loops search the selection
