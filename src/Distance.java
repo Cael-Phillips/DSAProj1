@@ -15,4 +15,21 @@ public class Distance{
     public double getDistance() {
         return distance;
     }
+
+    public Peak getOne() {
+        return One;
+    }
+
+    public Peak getTwo() {
+        return Two;
+    }
+
+    @Override
+    public String toString() {
+        return "Distance{" +
+                "One=" + One +
+                ", Two=" + Two +
+                ", distance=" + distance +
+                '}';
+    }
 }
