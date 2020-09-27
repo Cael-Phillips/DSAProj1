@@ -16,7 +16,7 @@ public class Main {
         int[][] elevation;
         Peak[] Peaks;
 
-        start=System.currentTimeMillis();
+
 
         line = reader.nextLine();//get the next line
         splits = line.split(" ");//split the line by whitespaces
@@ -34,6 +34,7 @@ public class Main {
             }//for
         }//for
 
+        start=System.currentTimeMillis();
         lowValue(elevation,row,column);
         Peaks=findPeaks(elevation,row,column,exRadius,98480);
         shortestDistance(Peaks);
@@ -66,6 +67,7 @@ public class Main {
         }
         System.out.println("The most common elevation is "+index+" appearing "+flag+" times");
     }
+
     public static void shortestDistance(Peak[] peaks){
         int count=0;
         int length = peaks.length;
@@ -99,6 +101,7 @@ public class Main {
         
         
     }
+
     public static void lowValue(int[][] elevation, int row, int column){
         int min=elevation[0][0],count=0;
         for(int i = 0; i < row; i++) {
@@ -118,25 +121,38 @@ public class Main {
 
 
 
+
+
+
+
+
+
+
     public static Peak[] findPeaks(int[][] elevation, int row, int column, int exRadius, int heightRef){
-        int flag,count=0,length=column*row,sel,k,l=0;
+        int flag,count=0,length=column*row,sel;
         Peak[] Peaks=new Peak[length];
+        boolean peak=true;
         //outer two loops grab a selection
-        for (int i = exRadius; i < row-exRadius; i+=exRadius*2){
-            for (int j = exRadius; j < column-exRadius; j+=exRadius*2){
+        for (int i = exRadius; i < row-exRadius; i++){
+            for (int j = exRadius; j < column-exRadius; j++){
                 flag=elevation[i][j];
 
                 //inner two loops search the selection
-                for (k = i-exRadius; k <i+exRadius; k++) {
-                    for (l = j-exRadius; l < j+exRadius; l++) {
+                for (int k = i-exRadius; k <i+exRadius; k++) {
+                    for (int l = j-exRadius; l < j+exRadius; l++) {
                         sel=elevation[k][l];
-                        if (sel>flag && sel>heightRef){
-                            flag=sel;
+                        //Find if the flag is taller or smaller than the selection
+                        if(flag<=sel){
+                            peak=false;
+                            break;
                         }
                     }//for l
+                    if (peak == false){
+                        break;
+                    }
                 }//for k
                 if(flag>=heightRef){
-                    Peak P = new Peak(flag,k,l);
+                    Peak P = new Peak(flag,i,j);
                     System.out.println(P.toString());
                     Peaks[count] = P;
                     count++;
@@ -150,6 +166,8 @@ public class Main {
         System.out.println("Number of Peaks:\t"+Peaks.length);
         return Peaks;
     }//find Peaks
+
+
 
 
 
