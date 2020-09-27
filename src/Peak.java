@@ -1,3 +1,9 @@
+/*
+ * Cael Phillips
+ * 000397240
+ * I, Cael Phillips 000397240, promise that all of the code is my own
+ * */
+
 public class Peak{
     private int val,row,col;
     public Peak(int val, int row, int col){
