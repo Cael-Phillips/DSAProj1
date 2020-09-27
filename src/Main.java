@@ -1,7 +1,6 @@
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.lang.Math;
-import java.lang.reflect.Array;
+
 import java.util.Arrays;
 import java.util.Scanner;
 
@@ -68,10 +67,10 @@ public class Main {
         System.out.println("The most common elevation is "+index+" appearing "+flag+" times");
     }
     public static void shortestDistance(Peak[] peaks){
-        int count=0,end;
+        int count=0;
         int length = peaks.length;
         Distance d,temp;
-        Distance[] distances = new Distance[peaks.length* peaks.length], Dist;
+        Distance[] distances = new Distance[peaks.length* peaks.length];
 
         for (int i = 0; i < length; i++){
             for (int j = i+1; j < length; j++) {
